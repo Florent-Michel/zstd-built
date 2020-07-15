@@ -85,18 +85,25 @@ MEM_STATIC ZSTD_cpuid_t ZSTD_cpuid(void) {
           : "edx");
     }
 #elif defined(__x86_64__) || defined(_M_X64) || defined(__i386__)
-    U32 n;
-    __asm__("cpuid" : "=a"(n) : "a"(0) : "ebx", "ecx", "edx");
-    if (n >= 1) {
-      U32 f1a;
-      __asm__("cpuid" : "=a"(f1a), "=c"(f1c), "=d"(f1d) : "a"(1) : "ebx");
-    }
-    if (n >= 7) {
-      U32 f7a;
-      __asm__("cpuid"
-              : "=a"(f7a), "=b"(f7b), "=c"(f7c)
-              : "a"(7), "c"(0)
-              : "edx");
+    #ifdef __TRUSTINSOFT_ANALYZER__
+        f1c = 0;
+        f1d = 0;
+        f7b = 0;
+        f7c = 0;
+    #else   
+        U32 n;
+        __asm__("cpuid" : "=a"(n) : "a"(0) : "ebx", "ecx", "edx");
+        if (n >= 1) {
+          U32 f1a;
+          __asm__("cpuid" : "=a"(f1a), "=c"(f1c), "=d"(f1d) : "a"(1) : "ebx");
+        }
+        if (n >= 7) {
+          U32 f7a;
+          __asm__("cpuid"
+                  : "=a"(f7a), "=b"(f7b), "=c"(f7c)
+                  : "a"(7), "c"(0)
+                  : "edx");
+    #endif         
     }
 #endif
     {
