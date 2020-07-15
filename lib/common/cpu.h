@@ -102,9 +102,9 @@ MEM_STATIC ZSTD_cpuid_t ZSTD_cpuid(void) {
           __asm__("cpuid"
                   : "=a"(f7a), "=b"(f7b), "=c"(f7c)
                   : "a"(7), "c"(0)
-                  : "edx");
-    #endif         
+                  : "edx");      
     }
+    #endif
 #endif
     {
         ZSTD_cpuid_t cpuid;
